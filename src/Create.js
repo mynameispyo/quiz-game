@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { authService, dbService } from "./fbase.js";
 import Login from "./components/Login";
+import TopMenu from "./components/TopMenu";
 
 function Create() {
   const [init, setInit] = useState(null);
@@ -77,9 +78,13 @@ function Create() {
     <>
       {init ? (
         !Boolean(userObj) ? (
+          <div>
+            <TopMenu/>
             <Login />
+          </div>
         ) : (
             <div>
+                <TopMenu/>
                 <button onClick={creatDB}>createButton</button>
                 <button onClick={loadDB}>LoadButton</button>
             </div>

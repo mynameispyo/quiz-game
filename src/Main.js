@@ -1,11 +1,11 @@
   
 import React from "react";
-
+import TopMenu from "./components/TopMenu";
 
 const Main = () => {
   return (
       <div>
-          <p>main</p>
+          <TopMenu/>
       </div>
   );
 };
