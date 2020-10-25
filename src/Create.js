@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { authService, dbService } from "./fbase.js";
+import { v4 as uuidv4 } from "uuid";
 import Login from "./components/Login";
 import TopMenu from "./components/TopMenu";
+import MyStuff from "./components/MyStuff";
+import EditQuiz from "./components/EditQuiz.js";
 
 function Create() {
   const [init, setInit] = useState(null);
   const [userObj, setUserObj] = useState(null);
+  const [editState, setEditState] = useState(false);
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
       if (user) {
@@ -19,61 +23,7 @@ function Create() {
       setInit(true);
     });
   }, []);
-  const creatDB = async (event) => {
-    event.preventDefault();
-    await dbService.doc("users/"+userObj.uid).set({
-      project: {
-        projects: [
-          {
-            "title": "Untitle-1",
-            "description" : "first project",
-            "cover-img": "https://page.ml/css/img/page-ml-logo.png",
-            "Visibility": "only-you",
-            "Lobby-music" : "default",
-            "projects":[
-              {
-                "question":"who is the first president of United State?",
-                "background": {
-                  "type":"img",
-                  "url":"https://page.ml/css/img/page-ml-logo.png",
-                },
-                "choices": [
-                  {
-                    "name": "John",
-                    "result": "false",
-                  },
-                  {
-                    "name": "George",
-                    "result": "true",
-                  },
-                  {
-                    "name": "Thomas",
-                    "result": "false",
-                  },
-                  {
-                    "name": "Jay",
-                    "result": "false",
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-      }
-    })
-  };
-  const loadDB = async (event) => {
-      event.preventDefault();
-      var docRef = dbService.doc("users/"+userObj.uid);
-
-    docRef.get().then(function(doc) {
-        if (doc.exists) {
-            console.log("Document data:", doc.data().project.projects[0].title);
-        } else {
-            console.log("No such document!");
-        }
-    })
-  }
+  const changeEditQuizState = () => {setEditState(true);}
   return (
     <>
       {init ? (
@@ -83,11 +33,16 @@ function Create() {
             <Login />
           </div>
         ) : (
+          !editState ?(
             <div>
                 <TopMenu/>
-                <button onClick={creatDB}>createButton</button>
-                <button onClick={loadDB}>LoadButton</button>
+                <MyStuff userObj={userObj} changeEditQuizState={changeEditQuizState}/>
             </div>
+          ) : (
+            <div>
+              <EditQuiz />
+            </div>
+          )
         )
       ) : (
         "Initializing..."
